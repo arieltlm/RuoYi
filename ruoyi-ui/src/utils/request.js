@@ -36,6 +36,7 @@ service.interceptors.request.use(config => {
     config.params = {};
     config.url = url;
   }
+  // ruoyi中请求中都没有设置isRepeatSubmit，所以只要是post或者put接口都做了防止数据重复提交，把刚提交的数据存进了sessionStorage里面
   if (!isRepeatSubmit && (config.method === 'post' || config.method === 'put')) {
     const requestObj = {
       url: config.url,
@@ -91,7 +92,7 @@ service.interceptors.response.use(res => {
     } else if (code === 500) {
       Message({ message: msg, type: 'error' })
       return Promise.reject(new Error(msg))
-    } else if (code === 601) {
+    } else if (code === 601) {// 601 检测到无效的端口句柄。 发生内部错误，这个时候重新启动计算机可确保网络连接正常
       Message({ message: msg, type: 'warning' })
       return Promise.reject('error')
     } else if (code !== 200) {
